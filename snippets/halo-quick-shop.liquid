@@ -797,7 +797,8 @@
                         id="quantity-quick-view-{{ product.id }}"
                         data-product="{{ product.id }}"
                         data-price="{{ current_variant.price }}"
-                        data-inventory-quantity="{{ current_variant.inventory_quantity }}">
+                        data-inventory-quantity="{{ current_variant.inventory_quantity }}"
+                        data-max-limit="{{ product.metafields.c_f.max_purchase_limit | default: 5 }}">
                       <a
                         href="#"
                         data-plus-quantity-cart=""

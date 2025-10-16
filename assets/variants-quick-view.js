@@ -405,6 +405,17 @@ class QuantityQuickViewInput extends HTMLElement {
             this.input.value =  inputValue;
         }
         
+        // Get the maximum limit from data attribute, with a fallback to 5
+        const maxLimit = parseInt(this.input.dataset.maxLimit) || 5;
+        
+        // Enforce maximum limit per product
+        if (inputValue > maxLimit) {
+            const message = `You can only purchase a maximum of ${maxLimit} items of this product.`;
+            showWarning(message, 3000);
+            inputValue = maxLimit;
+            this.input.value = inputValue;
+        }
+        
         if (inputValue > maxValue && !saleOutStock && maxValue > 0) {
             var arrayInVarName = `quick_view_selling_array_${this.input.dataset.product}`,
                 itemInArray = window[arrayInVarName],
@@ -462,11 +473,14 @@ class QuantityQuickViewInput extends HTMLElement {
 
         event.target.name === 'plus' ? this.input.stepUp() : this.input.stepDown();
         
-        // Enforce maximum of 5 items per product
-        if (this.input.value > 5) {
-            const message = "You can only purchase a maximum of 5 items of this product.";
+        // Get the maximum limit from data attribute, with a fallback to 5
+        const maxLimit = parseInt(this.input.dataset.maxLimit) || 5;
+        
+        // Enforce maximum limit per product
+        if (this.input.value > maxLimit) {
+            const message = `You can only purchase a maximum of ${maxLimit} items of this product.`;
             showWarning(message, 3000);
-            this.input.value = 5;
+            this.input.value = maxLimit;
         }
         
         if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent);

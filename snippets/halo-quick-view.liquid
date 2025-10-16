@@ -665,7 +665,7 @@
                                     <label class="form-label quantity__label" for="quantity-{{ product.id }}">{{ 'products.product.quantity.label__2' | t }}</label>
                                     <div class="quantity__container">
                                         <button type="button" name="minus" class="minus btn-quantity"><span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}</span></button>
-                                        <input class="form-input quantity__input quantity" type="number" name="quantity" min="1" value="1" inputmode="numeric" pattern="[0-9]*" id="quantity-{{ product.id }}" data-product="{{ product.id }}" data-price="{{ current_variant.price }}" data-inventory-quantity="{{ current_variant.inventory_quantity }}">
+                                        <input class="form-input quantity__input quantity" type="number" name="quantity" min="1" value="1" inputmode="numeric" pattern="[0-9]*" id="quantity-{{ product.id }}" data-product="{{ product.id }}" data-price="{{ current_variant.price }}" data-inventory-quantity="{{ current_variant.inventory_quantity }}" data-max-limit="{{ product.metafields.c_f.max_purchase_limit | default: 5 }}">
                                         <button type="button" name="plus" class="plus btn-quantity"><span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: product.title | escape }}</span></button>
                                     </div>
                                 </quantity-quick-view-input>

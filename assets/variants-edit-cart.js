@@ -558,25 +558,26 @@ class QuantityEditCartInput extends HTMLElement {
 
     onButtonClick(event) {
         event.preventDefault();
-        var inputValue = this.input.value;
+        const previousValue = this.input.value;
+        
+        event.target.name === 'plus' ? this.input.stepUp() : this.input.stepDown();
+        var newVal = parseInt(this.input.value);
         var maxValue = parseInt(this.input.dataset.inventoryQuantity);
-        const value = Number(this.input.value);
-        if (event.target.classList.contains('plus')) {
-            var newVal = value + 1;
-        } else {
-            var newVal = value - 1;
-        }
-
-        if(inputValue < 1) {
+        var currentId = this.closest('.product-edit-itemRight').querySelector('input[name="id"]')?.value;
+        
+        if(newVal < 1) {
             newVal = 1;
             this.input.value =  newVal;
         }  
         
-        // Enforce maximum of 5 items per product
-        if (newVal > 5) {
-            const message = "You can only purchase a maximum of 5 items of this product.";
+        // Get the maximum limit from data attribute, with a fallback to 5
+        const maxLimit = parseInt(this.input.dataset.maxLimit) || 5;
+        
+        // Enforce maximum limit per product
+        if (newVal > maxLimit) {
+            const message = `You can only purchase a maximum of ${maxLimit} items of this product.`;
             showWarning(message, 3000);
-            newVal = 5;
+            newVal = maxLimit;
         }
               
         if (inputValue > maxValue) {
@@ -605,11 +606,14 @@ class QuantityEditCartInput extends HTMLElement {
             inputValue = 1;
             this.input.value =  inputValue;
         } else {
-            // Enforce maximum of 5 items per product
-            if (inputValue > 5) {
-                var message = "You can only purchase a maximum of 5 items of this product.";
+            // Get the maximum limit from data attribute, with a fallback to 5
+            const maxLimit = parseInt(this.input.dataset.maxLimit) || 5;
+            
+            // Enforce maximum limit per product
+            if (inputValue > maxLimit) {
+                var message = `You can only purchase a maximum of ${maxLimit} items of this product.`;
                 showWarning(message, 3000);
-                inputValue = 5;
+                inputValue = maxLimit;
                 this.input.value =  inputValue;
 
                 this.item.find('.quantity__message').text(message).show();

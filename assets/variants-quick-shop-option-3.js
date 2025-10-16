@@ -563,15 +563,17 @@ class QuantityQuickShopInput extends HTMLElement {
         
         if(inputValue < 1) {
             inputValue = 1;
-
             this.input.value =  inputValue;
         }
         
-        // Enforce maximum of 5 items per product
-        if (inputValue > 5) {
-            const message = "You can only purchase a maximum of 5 items of this product.";
+        // Get the maximum limit from data attribute, with a fallback to 5
+        const maxLimit = parseInt(this.input.dataset.maxLimit) || 5;
+        
+        // Enforce maximum limit per product
+        if (inputValue > maxLimit) {
+            const message = `You can only purchase a maximum of ${maxLimit} items of this product.`;
             showWarning(message, 3000);
-            inputValue = 5;
+            inputValue = maxLimit;
             this.input.value =  inputValue;
         }
             

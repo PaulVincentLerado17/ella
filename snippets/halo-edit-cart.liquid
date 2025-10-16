@@ -47,7 +47,7 @@
                 </label>
                 <div class="update-quantity__group">
                     <a href="#" data-minus-quantity-cart="" class="minus btn-quantity"></a>
-                    <input class="form-input quantity__input" type="number" id="edit-quantity-{{ product.id }}" name="quantity" min="1" value="1" pattern="[0-9]*" {% if current_variant.inventory_management != null and current_variant.inventory_quantity > 0 %} data-quantity="{{ current_variant.inventory_quantity }}"{% endif %}>
+                    <input class="form-input quantity__input" type="number" id="edit-quantity-{{ product.id }}" name="quantity" min="1" value="1" pattern="[0-9]*" {% if current_variant.inventory_management != null and current_variant.inventory_quantity > 0 %} data-quantity="{{ current_variant.inventory_quantity }}"{% endif %} data-max-limit="{{ product.metafields.c_f.max_purchase_limit | default: 5 }}">
                     <a href="#" data-plus-quantity-cart="" class="plus btn-quantity"></a>
                 </div>
                 <span class="quantity__message"></span>
