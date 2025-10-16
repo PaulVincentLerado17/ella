@@ -578,10 +578,12 @@ class QuantityEditCartInput extends HTMLElement {
             const message = `You can only purchase a maximum of ${maxLimit} items of this product.`;
             showWarning(message, 3000);
             newVal = maxLimit;
+            this.input.value = newVal;
+            return; // Exit early to prevent further processing
         }
               
-        if (inputValue > maxValue) {
-            var arrayInVarName = `quick_view_selling_array_${this.input.dataset.product}`,
+        if (newVal > maxValue) {
+            var arrayInVarName = `edit_cart_selling_array_${this.input.dataset.product}`,
                 itemInArray = window[arrayInVarName],
                 itemStatus = itemInArray[currentId];
 
@@ -618,6 +620,7 @@ class QuantityEditCartInput extends HTMLElement {
 
                 this.item.find('.quantity__message').text(message).show();
                 this.item.removeClass('isChecked');
+                return; // Exit early to prevent further processing
             } else if (inventoryQuantity < inputValue) {
                 var message = window.inventory_text.warningQuantity.replace('[inventory]', inventoryQuantity);
 

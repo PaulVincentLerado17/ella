@@ -414,6 +414,7 @@ class QuantityQuickViewInput extends HTMLElement {
             showWarning(message, 3000);
             inputValue = maxLimit;
             this.input.value = inputValue;
+            return; // Exit early to prevent further processing
         }
         
         if (inputValue > maxValue && !saleOutStock && maxValue > 0) {
@@ -431,7 +432,8 @@ class QuantityQuickViewInput extends HTMLElement {
             this.input.value = inputValue;
         } 
 
-        this.input.value =  inputValue;
+        // Make sure the input value is set to the validated value
+        this.input.value = inputValue;
         document.querySelectorAll('quantity-quick-view-input input[name="quantity"]').forEach(input => {
             if (this.input != input) input.value = inputValue
         })

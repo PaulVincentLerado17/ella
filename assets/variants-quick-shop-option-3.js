@@ -568,6 +568,8 @@ class QuantityQuickShopInput extends HTMLElement {
         
         // Get the maximum limit from data attribute, with a fallback to 5
         const maxLimit = parseInt(this.input.dataset.maxLimit) || 5;
+        // Debugging: Log the maxLimit value
+        console.log('Max limit for product ' + this.input.dataset.product + ': ' + maxLimit);
         
         // Enforce maximum limit per product
         if (inputValue > maxLimit) {
@@ -575,7 +577,11 @@ class QuantityQuickShopInput extends HTMLElement {
             showWarning(message, 3000);
             inputValue = maxLimit;
             this.input.value =  inputValue;
+            return; // Exit early to prevent further processing
         }
+            
+        // Make sure the input value is set to the validated value
+        this.input.value = inputValue;
             
         if(window.quick_view_subtotal.show) {
             var text,
