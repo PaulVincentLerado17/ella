@@ -338,6 +338,13 @@ Shopify.removeItem = function(variant_id, callback) {
 
 Shopify.addItem = function(variant_id, quantity, $target, callback, input = null) {
     var quantity = quantity || 1;
+    
+    // Enforce maximum of 5 items per product
+    if (quantity > 5) {
+        quantity = 5;
+        showWarning("You can only purchase a maximum of 5 items of this product.", 3000);
+    }
+    
     let dataForm = 'quantity=' + quantity + '&id=' + variant_id;
 
     if ($target.closest('form')) {
@@ -612,6 +619,13 @@ class UpdateQuantityQuickShop extends HTMLElement {
         else newVal = value;
 
         if (newVal <= 0) newVal = 1;
+
+        // Enforce maximum of 5 items per product
+        if (newVal > 5) {
+            const message = "You can only purchase a maximum of 5 items of this product.";
+            showWarning(message, 3000);
+            newVal = 5;
+        }
 
         if (newVal > inStockNumber && !buttonAdd.matches('.button--pre-untrack')) {
             const message = getInputMessage(inStockNumber);

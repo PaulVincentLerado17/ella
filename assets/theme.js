@@ -2688,6 +2688,12 @@
             var variantId = popup.find('[name="id"]').val(),
                 qty = 1;
 
+            // Enforce maximum of 5 items per product
+            if (qty > 5) {
+                qty = 5;
+                halo.showWarning("You can only purchase a maximum of 5 items of this product.");
+            }
+
             halo.actionAddToCart($target, variantId, qty);
             
         },
@@ -2741,10 +2747,81 @@
             });
         },
 
+        actionAddToCart2: function($target, productForm) {
+            const config = fetchConfig('javascript');
+            var originalMessage = window.variantStrings.submit,
+                waitMessage = window.variantStrings.addingToCart,
+                successMessage = window.variantStrings.addedToCart;
+            
+            // Get quantity from form and enforce maximum of 5 items
+            var qtyInput = productForm.find('[name="quantity"]');
+            var qty = qtyInput.length > 0 ? parseInt(qtyInput.val()) : 1;
+            
+            // Enforce maximum of 5 items per product
+            if (qty > 5) {
+                qty = 5;
+                qtyInput.val(qty);
+                halo.showWarning("You can only purchase a maximum of 5 items of this product.");
+            }
+            
+            if($target.hasClass('button-text-change')){
+                originalMessage = $target.text();
+            }
+
+            $target.addClass('is-loading');
+
+            let addToCartForm = document.querySelector('[data-type="add-to-cart-form"]');
+            let formData = new FormData(addToCartForm);
+
+            const properties = document.querySelectorAll('input[name^="properties"]')
+
+            properties.forEach(property => {
+              if (property.value == null) return;
+              formData.append(property.name, property.value);
+            });
+
+            fetch('/cart/add.js', {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.status === 422) {
+                  $target.removeClass('is-loading');
+                  halo.showError(data.description);
+                } else {
+                  if (window.after_add_to_cart.type == 'cart') {
+                    halo.redirectTo(window.routes.cart);
+                  } else {
+                    Shopify.getCart((cartTotal) => {
+                      $body.addClass('cart-sidebar-show');
+                      halo.updateSidebarCart(cartTotal);
+                      $body.find('[data-cart-count]').text(cartTotal.item_count);
+                      $target.removeClass('is-loading');
+                    });
+                  }
+                }
+              })
+              .catch((error) => {
+                $target.removeClass('is-loading');
+                halo.showError(error);
+              });
+        },
+
         actionAddToCart: function($target, variantId, qty, input){
             var originalMessage = window.variantStrings.submit,
                 waitMessage = window.variantStrings.addingToCart,
                 successMessage = window.variantStrings.addedToCart;
+            
+            // Enforce maximum of 5 items per product
+            if (qty > 5) {
+                qty = 5;
+                halo.showWarning("You can only purchase a maximum of 5 items of this product.");
+            }
             
             if($target.hasClass('button-text-change')){
                 originalMessage = $target.text();
@@ -2973,6 +3050,13 @@
         checkSufficientStock: function(productForm) {
             const maxValidQuantity = productForm.find('[data-inventory-quantity]').data('inventory-quantity')
             const inputQuantity = parseInt(productForm.find('[data-inventory-quantity]').val())
+            
+            // Enforce maximum of 5 items per product
+            if (inputQuantity > 5) {
+                productForm.find('[data-inventory-quantity]').val(5);
+                halo.showWarning("You can only purchase a maximum of 5 items of this product.");
+                return true; // Still allow adding to cart with the corrected quantity
+            }
             
             return maxValidQuantity >= inputQuantity
         },  
@@ -5754,6 +5838,12 @@
         },
 
         expressAjaxAddToCart: function(variant_id, quantity, cartBtn, form) {
+            // Enforce maximum of 5 items per product
+            if (quantity > 5) {
+                quantity = 5;
+                halo.showWarning("You can only purchase a maximum of 5 items of this product.");
+            }
+            
             $.ajax({
                 type: "post",
                 url: "/cart/add.js",

@@ -642,6 +642,14 @@ class QuantityInput extends HTMLElement {
             this.input.value =  inputValue;
         }
         
+        // Enforce maximum of 5 items per product
+        if (inputValue > 5) {
+            const message = "You can only purchase a maximum of 5 items of this product.";
+            showWarning(message, 3000);
+            inputValue = 5;
+            this.input.value = inputValue;
+        }
+        
         if (inputValue > maxValue && !saleOutStock && maxValue > 0) {
             var arrayInVarName = `selling_array_${this.input.dataset.product}`,
                 itemInArray = window[arrayInVarName],
@@ -731,6 +739,14 @@ class QuantityInput extends HTMLElement {
         const previousValue = this.input.value;
         
         event.target.name === 'plus' ? this.input.stepUp() : this.input.stepDown();
+        
+        // Enforce maximum of 5 items per product
+        if (this.input.value > 5) {
+            const message = "You can only purchase a maximum of 5 items of this product.";
+            showWarning(message, 3000);
+            this.input.value = 5;
+        }
+        
         if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent);
     }
 

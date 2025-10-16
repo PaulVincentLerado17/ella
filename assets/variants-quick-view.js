@@ -461,6 +461,14 @@ class QuantityQuickViewInput extends HTMLElement {
         const previousValue = this.input.value;
 
         event.target.name === 'plus' ? this.input.stepUp() : this.input.stepDown();
+        
+        // Enforce maximum of 5 items per product
+        if (this.input.value > 5) {
+            const message = "You can only purchase a maximum of 5 items of this product.";
+            showWarning(message, 3000);
+            this.input.value = 5;
+        }
+        
         if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent);
     }
 

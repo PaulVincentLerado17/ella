@@ -571,6 +571,13 @@ class QuantityEditCartInput extends HTMLElement {
             newVal = 1;
             this.input.value =  newVal;
         }  
+        
+        // Enforce maximum of 5 items per product
+        if (newVal > 5) {
+            const message = "You can only purchase a maximum of 5 items of this product.";
+            showWarning(message, 3000);
+            newVal = 5;
+        }
               
         if (inputValue > maxValue) {
             var arrayInVarName = `quick_view_selling_array_${this.input.dataset.product}`,
@@ -598,7 +605,16 @@ class QuantityEditCartInput extends HTMLElement {
             inputValue = 1;
             this.input.value =  inputValue;
         } else {
-            if (inventoryQuantity < inputValue) {
+            // Enforce maximum of 5 items per product
+            if (inputValue > 5) {
+                var message = "You can only purchase a maximum of 5 items of this product.";
+                showWarning(message, 3000);
+                inputValue = 5;
+                this.input.value =  inputValue;
+
+                this.item.find('.quantity__message').text(message).show();
+                this.item.removeClass('isChecked');
+            } else if (inventoryQuantity < inputValue) {
                 var message = window.inventory_text.warningQuantity.replace('[inventory]', inventoryQuantity);
 
                 inputValue = inventoryQuantity;
